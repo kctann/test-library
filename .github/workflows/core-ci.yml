@@ -16,14 +16,31 @@ on:
 
 jobs:
   core-library-test:
-    name: Core Library Tests (Java ${{ matrix.java }})
+    name: Core Library Tests (Java ${{ matrix.java }} + Spring Boot ${{ matrix.spring-boot }})
     runs-on: ubuntu-latest
     
     strategy:
-      # Don't cancel other jobs if one fails - we want to see all Java version results
+      # Don't cancel other jobs if one fails - we want to see all combination results
       fail-fast: false
       matrix:
-        java: [11, 17, 21]
+        include:
+          # Java 11 - only Spring Boot 2.7.x (compatible)
+          - java: 11
+            spring-boot: 2.7.18
+          # Java 17 - all Spring Boot versions
+          - java: 17
+            spring-boot: 2.7.18
+          - java: 17
+            spring-boot: 3.0.13
+          - java: 17
+            spring-boot: 3.2.0
+          # Java 21 - all Spring Boot versions
+          - java: 21
+            spring-boot: 2.7.18
+          - java: 21
+            spring-boot: 3.0.13
+          - java: 21
+            spring-boot: 3.2.0
     
     steps:
     - name: Checkout repository
@@ -49,38 +66,39 @@ jobs:
         
     - name: Compile Core Library
       run: |
-        echo "🏗️ Compiling Core Library with Java ${{ matrix.java }}"
+        echo "🏗️ Compiling Core Library with Java ${{ matrix.java }} + Spring Boot ${{ matrix.spring-boot }}"
         cd test-library-core
-        ../mvnw clean compile -B -V
+        ../mvnw clean compile -B -V -Dspring-boot.version=${{ matrix.spring-boot }}
         echo "✅ Compilation successful"
         
     - name: Run Core Library Tests
       run: |
         echo "🧪 Running Core Library Tests"
         cd test-library-core
-        ../mvnw test -B
+        ../mvnw test -B -Dspring-boot.version=${{ matrix.spring-boot }}
         echo "✅ All tests passed"
         
     - name: Run Integration Tests
       run: |
         echo "🔗 Running Integration Tests"
         cd test-library-core
-        ../mvnw test -Dtest=*IntegrationTest -B
+        ../mvnw test -Dtest=*IntegrationTest -B -Dspring-boot.version=${{ matrix.spring-boot }}
         echo "✅ Integration tests completed"
         
     - name: Verify Library Packaging
       run: |
         echo "📦 Verifying Library Packaging"
         cd test-library-core
-        ../mvnw package -DskipTests -B
+        ../mvnw package -DskipTests -B -Dspring-boot.version=${{ matrix.spring-boot }}
         
-        # Verify JAR was created
-        if [ -f target/test-library-core-*.jar ]; then
+        # Verify JAR was created (using proper wildcard expansion)
+        JAR_FILES=(target/test-library-core-*.jar)
+        if [ -f "${JAR_FILES[0]}" ]; then
           echo "✅ Library JAR created successfully"
           ls -la target/*.jar
           
           # Check JAR size (should be small due to provided scope)
-          JAR_SIZE=$(stat -c%s target/test-library-core-*.jar)
+          JAR_SIZE=$(stat -c%s "${JAR_FILES[0]}")
           echo "📏 JAR size: $JAR_SIZE bytes"
           
           if [ $JAR_SIZE -lt 50000 ]; then
@@ -91,10 +109,10 @@ jobs:
           
           # Verify JAR contents
           echo "📋 JAR contents:"
-          jar -tf target/test-library-core-*.jar | head -20
+          jar -tf "${JAR_FILES[0]}" | head -20
           
           # Verify AutoConfiguration file exists
-          if jar -tf target/test-library-core-*.jar | grep -q "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"; then
+          if jar -tf "${JAR_FILES[0]}" | grep -q "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"; then
             echo "✅ AutoConfiguration imports file found"
           else
             echo "❌ AutoConfiguration imports file missing"
@@ -111,47 +129,58 @@ jobs:
         echo "🔍 Verifying Provided Dependencies"
         cd test-library-core
         
-        # Check that Spring Boot classes are NOT included in JAR
-        if jar -tf target/test-library-core-*.jar | grep -q "org/springframework"; then
-          echo "❌ Found Spring classes in JAR - provided scope not working correctly"
-          jar -tf target/test-library-core-*.jar | grep "org/springframework" | head -5
-          exit 1
+        JAR_FILES=(target/test-library-core-*.jar)
+        if [ -f "${JAR_FILES[0]}" ]; then
+          # Check that Spring Boot classes are NOT included in JAR
+          if jar -tf "${JAR_FILES[0]}" | grep -q "org/springframework"; then
+            echo "❌ Found Spring classes in JAR - provided scope not working correctly"
+            jar -tf "${JAR_FILES[0]}" | grep "org/springframework" | head -5
+            exit 1
+          else
+            echo "✅ No Spring Boot classes found in JAR - provided scope working correctly"
+          fi
+          
+          # Verify our classes are included
+          if jar -tf "${JAR_FILES[0]}" | grep -q "com/jamestann/test/library"; then
+            echo "✅ Library classes found in JAR"
+          else
+            echo "❌ Library classes not found in JAR"
+            exit 1
+          fi
         else
-          echo "✅ No Spring Boot classes found in JAR - provided scope working correctly"
-        fi
-        
-        # Verify our classes are included
-        if jar -tf target/test-library-core-*.jar | grep -q "com/jamestann/test/library"; then
-          echo "✅ Library classes found in JAR"
-        else
-          echo "❌ Library classes not found in JAR"
+          echo "❌ JAR file not found for verification"
           exit 1
         fi
         
     - name: Generate Test Report
       if: always()
       run: |
-        echo "## Core Library Test Report (Java ${{ matrix.java }})" >> test-report-java${{ matrix.java }}.md
-        echo "" >> test-report-java${{ matrix.java }}.md
-        echo "- **Java Version**: ${{ matrix.java }}" >> test-report-java${{ matrix.java }}.md
-        echo "- **Build Status**: ${{ job.status }}" >> test-report-java${{ matrix.java }}.md
-        echo "- **Test Results**: $(cd test-library-core && find target -name "*.xml" -path "*/surefire-reports/*" | wc -l) test files generated" >> test-report-java${{ matrix.java }}.md
+        REPORT_FILE="test-report-java${{ matrix.java }}-spring${{ matrix.spring-boot }}.md"
+        echo "## Core Library Test Report (Java ${{ matrix.java }} + Spring Boot ${{ matrix.spring-boot }})" >> $REPORT_FILE
+        echo "" >> $REPORT_FILE
+        echo "- **Java Version**: ${{ matrix.java }}" >> $REPORT_FILE
+        echo "- **Spring Boot Version**: ${{ matrix.spring-boot }}" >> $REPORT_FILE
+        echo "- **Build Status**: ${{ job.status }}" >> $REPORT_FILE
+        echo "- **Test Results**: $(cd test-library-core && find target -name "*.xml" -path "*/surefire-reports/*" 2>/dev/null | wc -l) test files generated" >> $REPORT_FILE
         
-        if [ -f test-library-core/target/test-library-core-*.jar ]; then
-          JAR_SIZE=$(stat -c%s test-library-core/target/test-library-core-*.jar)
-          echo "- **JAR Size**: $JAR_SIZE bytes" >> test-report-java${{ matrix.java }}.md
-          echo "- **JAR Created**: ✅ Yes" >> test-report-java${{ matrix.java }}.md
+        cd test-library-core
+        JAR_FILES=(target/test-library-core-*.jar)
+        if [ -f "${JAR_FILES[0]}" ]; then
+          JAR_SIZE=$(stat -c%s "${JAR_FILES[0]}")
+          echo "- **JAR Size**: $JAR_SIZE bytes" >> ../$REPORT_FILE
+          echo "- **JAR Created**: ✅ Yes" >> ../$REPORT_FILE
         else
-          echo "- **JAR Created**: ❌ No" >> test-report-java${{ matrix.java }}.md
+          echo "- **JAR Created**: ❌ No" >> ../$REPORT_FILE
         fi
+        cd ..
         
-        cat test-report-java${{ matrix.java }}.md
+        cat $REPORT_FILE
         
     - name: Upload Library JAR
       if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: test-library-core-java${{ matrix.java }}
+        name: test-library-core-java${{ matrix.java }}-spring${{ matrix.spring-boot }}
         path: |
           test-library-core/target/*.jar
           test-library-core/target/surefire-reports/
@@ -161,8 +190,8 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: test-report-java${{ matrix.java }}
-        path: test-report-java${{ matrix.java }}.md
+        name: test-report-java${{ matrix.java }}-spring${{ matrix.spring-boot }}
+        path: test-report-java${{ matrix.java }}-spring${{ matrix.spring-boot }}.md
         retention-days: 30
 
   # Summary job to provide overall status
