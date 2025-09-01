@@ -44,6 +44,9 @@ jobs:
           ${{ runner.os }}-m2-java${{ matrix.java }}-
           ${{ runner.os }}-m2-
         
+    - name: Make mvnw executable
+      run: chmod +x ./mvnw
+        
     - name: Compile Core Library
       run: |
         echo "🏗️ Compiling Core Library with Java ${{ matrix.java }}"
