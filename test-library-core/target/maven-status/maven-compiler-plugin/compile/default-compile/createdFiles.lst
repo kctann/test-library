@@ -1,5 +1,7 @@
+com\jamestann\test\library\util\SpringBootVersionDetector.class
 com\jamestann\test\library\config\TestLibraryAutoConfiguration.class
 com\jamestann\test\library\config\TestLibraryProperties.class
+com\jamestann\test\library\util\SpringBootVersionDetector$VersionCompatibilityReport.class
 com\jamestann\test\library\config\TestLibraryProperties$ActuatorConfig.class
 com\jamestann\test\library\config\TestLibraryManager.class
 META-INF\spring-configuration-metadata.json

@@ -85,7 +85,7 @@ spring-boot Actuator,Lombok,Github
 
 ### File Constructure
 - `/instruction`:
-    - `[編號][功能]-SD.md`、`[編號][功能]-TODO.md`
+    - `[編號][功能]-SD.md`、`[編號][功能]-TODO.md`、`[編號][功能][M]-TODO.md`
     - `UPDATE-HISTORY.md`
 
 ### featureNumber-featureName-SD.md
@@ -95,6 +95,7 @@ spring-boot Actuator,Lombok,Github
     - Given: The initial state or context of the system.
     - When: The specific action the user performs.
     - Then: The expected, measurable outcome of that action.
+- Milestones:當一個任務太大的時候，將他break down成多個Milestones，撰寫TODO時，每個Milestone各自撰寫一個TODO.md，命名範例:`001-M1-feature1-TODO.md`
 - Update code/New code History(append):實際上改動的程式，如果是新程式則寫上本身編號與資訊
     - ex:`NEW-[004][抓取html資訊]BrowserSimulationService#getContentWithSelenium`
 - Update code/New code History(append):如果是原本就寫好的程式，需要將他在Comment中的資訊補上
@@ -102,7 +103,7 @@ spring-boot Actuator,Lombok,Github
 - Update History(append)
     - 如果因為其他feature而更動，依照日期時間順序寫下被哪個feature更動，調整內容簡述，更動原因，以及時間戳記
 
-### featureNumber-featureName-TODO.md
+### featureNumber-featureName-TODO.mdTODO
 - 以中文書寫
 - featureName
 - 條列實作項目

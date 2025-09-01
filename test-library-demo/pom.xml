@@ -5,22 +5,31 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.jamestann</groupId>
-        <artifactId>test-library-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.0</version>
+        <relativePath/>
     </parent>
 
+    <groupId>com.jamestann</groupId>
     <artifactId>test-library-demo</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Test Library Demo</name>
     <description>Demo web service for testing Test Library functionality</description>
+
+    <properties>
+        <java.version>11</java.version>
+        <test-library.version>1.0.0-SNAPSHOT</test-library.version>
+    </properties>
 
     <dependencies>
         <!-- Our Library Dependency -->
         <dependency>
             <groupId>com.jamestann</groupId>
             <artifactId>test-library-core</artifactId>
+            <version>${test-library.version}</version>
         </dependency>
 
         <!-- Spring Boot Web Starter -->
@@ -49,6 +58,28 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <!-- Note: For different Spring Boot versions, we'll need separate POMs or use CI Matrix -->
+        <!-- This demonstrates the profile structure for documentation purposes -->
+        <profile>
+            <id>spring-boot-2.7</id>
+            <!-- Would require parent version 2.7.18 - handled in CI -->
+        </profile>
+
+        <profile>
+            <id>spring-boot-3.0</id>
+            <!-- Would require parent version 3.0.13 - handled in CI -->
+        </profile>
+
+        <profile>
+            <id>spring-boot-3.2</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <!-- Current parent version 3.2.0 -->
+        </profile>
+    </profiles>
 
     <build>
         <plugins>

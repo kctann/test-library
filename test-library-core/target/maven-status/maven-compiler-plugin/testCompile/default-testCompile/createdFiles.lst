@@ -1,2 +1,3 @@
 com\jamestann\test\library\config\TestLibraryAutoConfigurationTest.class
+com\jamestann\test\library\integration\LibraryInternalIntegrationTest.class
 com\jamestann\test\library\compatibility\JavaVersionCompatibilityTest.class

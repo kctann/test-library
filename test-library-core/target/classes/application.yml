@@ -32,9 +32,9 @@ management:
 # Application Info
 info:
   app:
-    name: 'Test Library Core'
-    description: 'Core library providing Spring Boot Actuator monitoring and AOP functionality'
-    version: '1.0.0-SNAPSHOT'
-    encoding: 'UTF-8'
+    name: '@project.name@'
+    description: '@project.description@'
+    version: '@project.version@'
+    encoding: '@project.build.sourceEncoding@'
     java:
-      version: '21.0.7'
+      version: '@java.version@'

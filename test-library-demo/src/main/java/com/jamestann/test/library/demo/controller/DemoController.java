@@ -72,4 +72,29 @@ public class DemoController {
         
         return response;
     }
+
+    @GetMapping("/version-info")
+    public Map<String, Object> getVersionInfo() {
+        log.info("Version info requested");
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        // Java版本資訊
+        response.put("javaVersion", System.getProperty("java.version"));
+        response.put("javaVendor", System.getProperty("java.vendor"));
+        
+        // Spring Boot版本資訊
+        response.put("springBootVersion", testLibraryManager.getCurrentSpringBootVersion());
+        
+        // Library版本相容性資訊
+        var compatibilityReport = testLibraryManager.getVersionCompatibilityReport();
+        response.put("libraryVersion", "1.0.0-SNAPSHOT");
+        response.put("versionCompatibility", Map.of(
+            "compatible", compatibilityReport.isCompatible(),
+            "message", compatibilityReport.getMessage(),
+            "supportedVersions", compatibilityReport.getSupportedVersions()
+        ));
+        
+        return response;
+    }
 }

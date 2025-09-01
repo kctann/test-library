@@ -12,13 +12,6 @@
     <name>Test Library Parent</name>
     <description>Parent POM for Test Library project - A Spring Boot Actuator shared library</description>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
-        <relativePath/>
-    </parent>
-
     <modules>
         <module>test-library-core</module>
         <module>test-library-demo</module>
@@ -34,10 +27,22 @@
         <java.version>11</java.version>
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
         <maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
+        
+        <!-- Spring Boot Version -->
+        <spring-boot.version>3.2.0</spring-boot.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- Spring Boot Dependencies BOM -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
             <!-- Internal Dependencies -->
             <dependency>
                 <groupId>com.jamestann</groupId>
@@ -176,6 +181,12 @@
                             <include>**/*Benchmark.java</include>
                         </includes>
                     </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.3.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
