@@ -1,0 +1,47 @@
+# Demo Application Configuration
+server:
+  port: 8080
+
+spring:
+  application:
+    name: test-library-demo
+
+# Test Library Configuration
+test:
+  library:
+    enabled: true
+    library-name: demo-library
+    performance-monitoring-enabled: true
+    logging-standardization-enabled: true
+    actuator:
+      custom-endpoints-enabled: true
+      endpoint-path-prefix: test-library
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,test-library
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.jamestann.test.library: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level [%X{libraryName:-}] %logger{36} - %msg%n"
+
+# Application Info
+info:
+  app:
+    name: 'Test Library Demo'
+    description: 'Demo web service for testing Test Library functionality'
+    version: '1.0.0-SNAPSHOT'

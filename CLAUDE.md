@@ -51,20 +51,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 如果該次開發有做UnitTest，將UnitTest保留在`/test`中
 
 ## Project Overview
-這個Project的主要目的是在測試如何打造適合Springboot共用Library。此專案目標是一個高擴展性、高重用性並且具有Matrix Test,Unit Test,Integration Test,Performance Test的Actuator。
+這個Project的主要目的是在測試如何打造適合spring-boot共用Library。此專案目標是一個高擴展性、高重用性並且具有Matrix Test,Unit Test,Integration Test,Performance Test的Actuator。
+這個Project同時也是在測試Library開發的Pilot原型，所以凡是與架構、測試、版本控制等相關的討論議題，都不要綁定這個Library的功能設計，反而應該要更廣泛的思考，避免Pilot只適用於目前的功能。
+
 ## Development Commands
 
 ### Build and Run
 
-[//]: # (- Build the project: `./mvnw clean compile`)
-
-[//]: # (- Run the application: `./mvnw spring-boot:run`)
-
-[//]: # (- Package the application: `./mvnw clean package`)
-
-[//]: # (- Run tests: `./mvnw test`)
-
-[//]: # (- Run a specific test: `./mvnw test -Dtest=ClassName`)
+- Build the project: `./mvnw clean compile`
+- Run the application: `./mvnw spring-boot:run`
+- Package the application: `./mvnw clean package`
+- Run tests: `./mvnw test`
+- Run a specific test: `./mvnw test -Dtest=ClassName`
 
 ### Development Tools
 - The application uses Spring Boot DevTools for automatic restart during development
@@ -72,11 +70,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 [//]: # (- **IMPORTANT**: Always use Maven wrapper &#40;`./mvnw`&#41; instead of `mvn` as Maven is not installed globally in this environment)
 
 ## Architecture and Structure
+提供功能的test-library-core(jar)以及驗證功能的test-library-demo(spring-boot專案)
 
 ### Core Components
 
+### Library Requirements
+Library要具備相容性，所以需要可以測試不同的Java版本(11,17,21)、同時需要測試不同的spring-boot版本(三個主要的LTS)。
+故test-library-core的pom.xml需要有可以從使用者注入版本的彈性
+故test-library-demo的pom.xml要可以採用不同的java,spring-boot的版本
+
 ### Key Technologies
-Springboot Actuator,Lombok,Github
+spring-boot Actuator,Lombok,Github
 
 
 ### File Constructure

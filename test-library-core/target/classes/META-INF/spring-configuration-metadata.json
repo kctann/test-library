@@ -1,0 +1,60 @@
+{
+  "groups": [
+    {
+      "name": "test.library",
+      "type": "com.jamestann.test.library.config.TestLibraryProperties",
+      "sourceType": "com.jamestann.test.library.config.TestLibraryProperties"
+    },
+    {
+      "name": "test.library.actuator",
+      "type": "com.jamestann.test.library.config.TestLibraryProperties$ActuatorConfig",
+      "sourceType": "com.jamestann.test.library.config.TestLibraryProperties",
+      "sourceMethod": "getActuator()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "test.library.actuator.custom-endpoints-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否啟用自訂Actuator端點",
+      "sourceType": "com.jamestann.test.library.config.TestLibraryProperties$ActuatorConfig",
+      "defaultValue": true
+    },
+    {
+      "name": "test.library.actuator.endpoint-path-prefix",
+      "type": "java.lang.String",
+      "description": "自訂端點路徑前綴",
+      "sourceType": "com.jamestann.test.library.config.TestLibraryProperties$ActuatorConfig",
+      "defaultValue": "test-library"
+    },
+    {
+      "name": "test.library.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否啟用Test Library功能",
+      "sourceType": "com.jamestann.test.library.config.TestLibraryProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "test.library.library-name",
+      "type": "java.lang.String",
+      "description": "Library名稱，用於AOP效能監控標識",
+      "sourceType": "com.jamestann.test.library.config.TestLibraryProperties",
+      "defaultValue": "test-library"
+    },
+    {
+      "name": "test.library.logging-standardization-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否啟用Log標準化",
+      "sourceType": "com.jamestann.test.library.config.TestLibraryProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "test.library.performance-monitoring-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否啟用效能監控",
+      "sourceType": "com.jamestann.test.library.config.TestLibraryProperties",
+      "defaultValue": true
+    }
+  ],
+  "hints": []
+}

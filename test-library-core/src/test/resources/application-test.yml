@@ -1,0 +1,30 @@
+# Test Environment Configuration
+server:
+  port: 0  # 隨機端口，避免測試時端口衝突
+
+spring:
+  application:
+    name: test-library-test
+
+# Logging Configuration for Test
+logging:
+  level:
+    root: WARN
+    com.jamestann.test.library: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Management and Actuator Configuration for Test
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# Test specific configurations
+test:
+  data:
+    cleanup: true
