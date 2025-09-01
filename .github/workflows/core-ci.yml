@@ -36,7 +36,7 @@ jobs:
         distribution: 'temurin'
         
     - name: Cache Maven packages
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-java${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
@@ -146,7 +146,7 @@ jobs:
         
     - name: Upload Library JAR
       if: success()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-library-core-java${{ matrix.java }}
         path: |
@@ -156,7 +156,7 @@ jobs:
         
     - name: Upload Test Report
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-report-java${{ matrix.java }}
         path: test-report-java${{ matrix.java }}.md
@@ -196,7 +196,7 @@ jobs:
         cat core-ci-summary.md
         
     - name: Upload Summary Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: core-ci-summary
         path: core-ci-summary.md
