@@ -100,10 +100,10 @@
 - 添加 com.jamestann.test.library.actuator.LibraryActuatorAutoConfiguration
 - 確保配置載入順序正確
 
-### TODO 8: 建立 M1 測試案例
-**描述**: 建立 M1 功能的完整測試套件
+### TODO 8: 建立 M1 單元測試案例
+**描述**: 建立 M1 核心組件的單元測試套件
 **Input**: 所有 M1 實作類別
-**Output**: 測試類別
+**Output**: 單元測試類別
 **檔案**: 
 - `src/test/java/com/jamestann/test/library/actuator/LibraryActuatorAutoConfigurationTest.java`
 - `src/test/java/com/jamestann/test/library/actuator/LibraryHealthIndicatorTest.java`
@@ -112,7 +112,75 @@
 - 自動配置載入測試
 - Health Check 回應測試
 - SLI 數據收集準確性測試
-- Actuator 端點可用性測試
+- LibrarySLICollector 多線程安全測試
+- LibraryMonitoringInterceptor 異常處理測試
+- 各組件條件化載入測試
+- 配置屬性驗證測試
+
+### TODO 9: 在 Demo 中建立測試端點 Controller
+**描述**: 在 Demo 模組建立測試端點，供手動測試和整合測試使用
+**Input**: 無（新建檔案）
+**Output**: ActuatorTestController.java
+**檔案**: `test-library-demo/src/main/java/com/jamestann/test/library/demo/controller/ActuatorTestController.java`
+**實作內容**:
+- `GET /test/fast` - 快速回應端點 (< 50ms)
+- `GET /test/normal` - 正常回應端點 (50-200ms)
+- `GET /test/slow` - 慢速回應端點 (300ms+，使用 Thread.sleep)
+- `GET /test/error` - 錯誤端點 (拋出 RuntimeException)
+- `GET /test/cpu-intensive` - CPU 密集運算端點
+- `GET /test/batch` - 批量處理多個子請求端點
+
+### TODO 10: 建立 M1 核心功能整合測試
+**描述**: 建立 M1 核心功能的整合測試，驗證組件間協作
+**Input**: M1 所有組件
+**Output**: M1IntegrationTest.java
+**檔案**: `test-library-core/src/test/java/com/jamestann/test/library/actuator/M1IntegrationTest.java`
+**實作內容**:
+- LibraryActuatorAutoConfiguration 自動載入測試
+- LibraryHealthIndicator 與 Spring Boot Health 整合測試
+- LibraryInfoContributor 與 Spring Boot Info 整合測試
+- LibrarySLICollector 數據收集整合測試
+- AOP 攔截器與 Spring MVC 整合測試
+- 組件間依賴關係驗證測試
+
+### TODO 11: 建立 Demo 完整功能測試
+**描述**: 建立 Demo 應用程式的完整功能測試，驗證端到端流程
+**Input**: ActuatorTestController, M1 所有組件
+**Output**: ActuatorFunctionalTest.java
+**檔案**: `test-library-demo/src/test/java/com/jamestann/test/library/demo/ActuatorFunctionalTest.java`
+**實作內容**:
+- Spring Boot 測試環境啟動
+- 呼叫各種測試端點 (fast, normal, slow, error)
+- 檢查 `/actuator/health` 包含 Library 健康狀態
+- 檢查 `/actuator/info` 包含 Library 資訊
+- 檢查 `/actuator/metrics` 包含 Library SLI 指標
+- 驗證 Golden Signals 四個維度數據收集
+
+### TODO 12: 建立 SLI 數據準確性驗證測試
+**描述**: 建立專門驗證 SLI 數據收集準確性的測試
+**Input**: ActuatorTestController, LibrarySLICollector
+**Output**: SLIDataAccuracyTest.java
+**檔案**: `test-library-demo/src/test/java/com/jamestann/test/library/demo/SLIDataAccuracyTest.java`
+**實作內容**:
+- 發送已知數量的請求到測試端點
+- 驗證請求計數準確性 (Traffic)
+- 驗證錯誤率統計準確性 (Errors)
+- 驗證延遲數據範圍合理性 (Latency)
+- 驗證資源使用監控 (Saturation)
+- 測試並發請求下的數據準確性
+
+### TODO 13: 建立 Actuator 端點可用性測試
+**描述**: 建立專門測試 Actuator 端點可用性和格式的測試
+**Input**: Actuator 端點
+**Output**: ActuatorEndpointsTest.java
+**檔案**: `test-library-demo/src/test/java/com/jamestann/test/library/demo/ActuatorEndpointsTest.java`
+**實作內容**:
+- `/actuator/health` 端點可訪問性和回應格式測試
+- `/actuator/info` 端點內容驗證測試
+- `/actuator/metrics` 端點 Library 指標存在測試
+- JSON 回應結構正確性驗證
+- 端點啟用/停用配置功能測試
+- 異常情況下端點穩定性測試
 
 ## 驗證標準
 1. ✅ /actuator/health 顯示 Library 健康狀態
@@ -122,7 +190,12 @@
 5. ✅ 支援條件化啟用/停用 Actuator 功能
 6. ✅ 所有 SLI 數據準確記錄 (延遲、流量、錯誤率)
 7. ✅ 與現有 Spring Boot Actuator 功能無衝突
-8. ✅ 測試覆蓋率達到 80% 以上
+8. ✅ 所有 M1 單元測試通過
+9. ✅ Demo 整合測試成功啟動並驗證 SLI 收集
+10. ✅ Actuator 端點可訪問且返回正確數據格式
+11. ✅ Golden Signals 四個維度的數據都能收集
+12. ✅ 異常情況下系統保持穩定
+13. ✅ CI 測試套件執行時間 < 3 分鐘
 
 ## 注意事項
 - M1 專注於基礎設施建立，不包含 SLO 配置功能
