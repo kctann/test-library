@@ -1,4 +1,4 @@
-# AlertManager配置
+# AlertManager配置 - 簡化版本
 global:
   smtp_smarthost: 'localhost:587'
   smtp_from: 'alertmanager@test-library.com'
@@ -33,20 +33,16 @@ receivers:
     webhook_configs:
       - url: 'http://localhost:5001/critical'
         send_resolved: true
-        title: 'CRITICAL: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
-        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
 
   - name: 'latency-alerts'
     webhook_configs:
       - url: 'http://localhost:5001/latency'
         send_resolved: true
-        title: 'LATENCY: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
 
   - name: 'error-alerts'
     webhook_configs:
       - url: 'http://localhost:5001/errors'
         send_resolved: true
-        title: 'ERRORS: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
 
 # 抑制規則
 inhibit_rules:
