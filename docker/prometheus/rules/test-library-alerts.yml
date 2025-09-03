@@ -1,0 +1,122 @@
+# Test Library 告警規則
+groups:
+  - name: test-library-alerts
+    rules:
+      # Golden Signals 告警規則
+      
+      # Latency (延遲) 告警
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, application_http_request_duration_bucket) > 1
+        for: 2m
+        labels:
+          severity: warning
+          category: latency
+        annotations:
+          summary: "High latency detected"
+          description: "95th percentile latency is above 1 second for {{ $labels.endpoint }}"
+
+      - alert: VeryHighLatency
+        expr: histogram_quantile(0.95, application_http_request_duration_bucket) > 5
+        for: 1m
+        labels:
+          severity: critical
+          category: latency
+        annotations:
+          summary: "Very high latency detected"
+          description: "95th percentile latency is above 5 seconds for {{ $labels.endpoint }}"
+
+      # Traffic (流量) 告警
+      - alert: LowTraffic
+        expr: rate(application_http_request_total[5m]) < 0.1
+        for: 5m
+        labels:
+          severity: warning
+          category: traffic
+        annotations:
+          summary: "Low traffic detected"
+          description: "Request rate is below 0.1 RPS for {{ $labels.endpoint }}"
+
+      - alert: HighTraffic
+        expr: rate(application_http_request_total[5m]) > 100
+        for: 2m
+        labels:
+          severity: warning
+          category: traffic
+        annotations:
+          summary: "High traffic detected"
+          description: "Request rate is above 100 RPS for {{ $labels.endpoint }}"
+
+      # Errors (錯誤) 告警
+      - alert: HighErrorRate
+        expr: rate(application_http_request_errors[5m]) / rate(application_http_request_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+          category: errors
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is above 5% for {{ $labels.endpoint }}"
+
+      - alert: VeryHighErrorRate
+        expr: rate(application_http_request_errors[5m]) / rate(application_http_request_total[5m]) > 0.20
+        for: 1m
+        labels:
+          severity: critical
+          category: errors
+        annotations:
+          summary: "Very high error rate detected"
+          description: "Error rate is above 20% for {{ $labels.endpoint }}"
+
+      # Saturation (飽和度) 告警
+      - alert: HighActiveSessions
+        expr: application_http_request_active > 50
+        for: 2m
+        labels:
+          severity: warning
+          category: saturation
+        annotations:
+          summary: "High number of active requests"
+          description: "Active requests count is above 50"
+
+      # 應用程式健康告警
+      - alert: ApplicationDown
+        expr: up{job="test-library-demo"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: availability
+        annotations:
+          summary: "Application is down"
+          description: "Test Library Demo application is not responding"
+
+      # JVM記憶體告警
+      - alert: HighMemoryUsage
+        expr: (jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"}) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          category: memory
+        annotations:
+          summary: "High memory usage"
+          description: "JVM heap memory usage is above 80%"
+
+      - alert: VeryHighMemoryUsage
+        expr: (jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"}) > 0.9
+        for: 2m
+        labels:
+          severity: critical
+          category: memory
+        annotations:
+          summary: "Very high memory usage"
+          description: "JVM heap memory usage is above 90%"
+
+      # 自定義Metrics告警
+      - alert: CustomCounterAnomaly
+        expr: increase(demo_custom_counter_total[5m]) > 1000
+        for: 2m
+        labels:
+          severity: warning
+          category: business
+        annotations:
+          summary: "Custom counter anomaly"
+          description: "Demo custom counter increased by more than 1000 in 5 minutes"

@@ -1,0 +1,270 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Test Library - Golden Signals",
+    "description": "Golden Signals monitoring for Test Library Demo application",
+    "tags": ["test-library", "golden-signals", "sli", "sre"],
+    "timezone": "browser",
+    "editable": true,
+    "hideControls": false,
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+    },
+    "refresh": "5s",
+    "version": 1,
+    "panels": [
+      {
+        "id": 1,
+        "title": "🚀 Request Latency (Golden Signal 1)",
+        "type": "stat",
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, application_http_request_duration_bucket)",
+            "legendFormat": "P95 Latency",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.99, application_http_request_duration_bucket)",
+            "legendFormat": "P99 Latency", 
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 0.5},
+                {"color": "red", "value": 1.0}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "orientation": "auto",
+          "textMode": "auto",
+          "colorMode": "value",
+          "graphMode": "area"
+        }
+      },
+      {
+        "id": 2,
+        "title": "📊 Request Traffic (Golden Signal 2)",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0},
+        "targets": [
+          {
+            "expr": "rate(application_http_request_total[5m])",
+            "legendFormat": "{{endpoint}} - {{method}}",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Requests/sec",
+            "min": 0
+          }
+        ],
+        "legend": {
+          "show": true
+        }
+      },
+      {
+        "id": 3,
+        "title": "❌ Error Rate (Golden Signal 3)",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "rate(application_http_request_errors[5m]) / rate(application_http_request_total[5m]) * 100",
+            "legendFormat": "Error Rate %",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Error Rate (%)",
+            "min": 0,
+            "max": 100
+          }
+        ],
+        "thresholds": [
+          {
+            "value": 5,
+            "colorMode": "critical",
+            "op": "gt"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "🔥 Saturation (Golden Signal 4)",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0},
+        "targets": [
+          {
+            "expr": "application_http_request_active",
+            "legendFormat": "Active Requests",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Active Requests",
+            "min": 0
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "🎯 Custom Metrics - Business Operations",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "rate(demo_custom_counter_total[5m])",
+            "legendFormat": "Custom Counter Rate",
+            "refId": "A"
+          },
+          {
+            "expr": "demo_custom_gauge",
+            "legendFormat": "Custom Gauge Value",
+            "refId": "B"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Rate/Value"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "💾 JVM Memory Usage",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{area=\"heap\"} / jvm_memory_max_bytes{area=\"heap\"} * 100",
+            "legendFormat": "Heap Memory Usage %",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Memory Usage (%)",
+            "min": 0,
+            "max": 100
+          }
+        ],
+        "thresholds": [
+          {
+            "value": 80,
+            "colorMode": "critical",
+            "op": "gt"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "⚡ Method Execution Times",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, application_method_duration_bucket)",
+            "legendFormat": "{{method_name}} P95",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(application_method_duration_count[5m])",
+            "legendFormat": "{{method_name}} Rate",
+            "refId": "B"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Time (s) / Rate (ops/s)"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "🏥 Application Health Status",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 12, "x": 0, "y": 24},
+        "targets": [
+          {
+            "expr": "up{job=\"test-library-demo\"}",
+            "legendFormat": "Application Status",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "options": {
+                  "0": {"text": "DOWN", "color": "red"},
+                  "1": {"text": "UP", "color": "green"}
+                },
+                "type": "value"
+              }
+            ],
+            "color": {"mode": "thresholds"}
+          }
+        }
+      },
+      {
+        "id": 9,
+        "title": "📈 Request Distribution by Endpoint",
+        "type": "piechart",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24},
+        "targets": [
+          {
+            "expr": "sum(rate(application_http_request_total[5m])) by (endpoint)",
+            "legendFormat": "{{endpoint}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "calcs": ["lastNotNull"]
+          },
+          "pieType": "pie",
+          "tooltip": {
+            "mode": "single"
+          },
+          "legend": {
+            "displayMode": "table",
+            "placement": "right",
+            "values": ["value", "percent"]
+          }
+        }
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "name": "Deployments",
+          "datasource": "Prometheus",
+          "enable": true,
+          "expr": "resets(up[1h]) > 0",
+          "iconColor": "blue",
+          "titleFormat": "Application Restart"
+        }
+      ]
+    }
+  }
+}

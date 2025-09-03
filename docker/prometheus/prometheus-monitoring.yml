@@ -1,0 +1,39 @@
+# Prometheus純監控配置文件（無應用程式）
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'test-library-monitor'
+
+# 告警規則文件（可選）
+rule_files:
+  - "rules/*.yml"
+
+# 抓取配置（純監控系統）
+scrape_configs:
+  # Prometheus自身監控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 15s
+    metrics_path: /metrics
+
+  # AlertManager監控
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['alertmanager:9093']
+    scrape_interval: 15s
+
+  # 示例：本地機器監控（可選，用於測試）
+  - job_name: 'local-machine'
+    static_configs:
+      - targets: ['host.docker.internal:9100']  # 如果安裝了node_exporter
+    scrape_interval: 30s
+    # 如果沒有node_exporter會失敗，但不影響其他監控
+
+# AlertManager配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093

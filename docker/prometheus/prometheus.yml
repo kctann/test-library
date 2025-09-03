@@ -1,0 +1,60 @@
+# Prometheus配置文件
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'test-library-monitor'
+
+# 告警規則文件
+rule_files:
+  - "rules/*.yml"
+
+# 抓取配置
+scrape_configs:
+  # Prometheus自身監控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 15s
+    metrics_path: /metrics
+
+  # Test Library Demo應用程式
+  - job_name: 'test-library-demo'
+    static_configs:
+      - targets: ['demo-app:8080']
+    scrape_interval: 5s
+    metrics_path: '/actuator/prometheus'
+    scrape_timeout: 10s
+    honor_labels: true
+    metric_relabel_configs:
+      # 重新標記application metrics
+      - source_labels: [__name__]
+        regex: 'application_(.*)'
+        target_label: 'test_library_metric'
+        replacement: '${1}'
+      # 添加應用標籤
+      - target_label: 'application'
+        replacement: 'test-library-demo'
+      - target_label: 'environment'
+        replacement: 'demo'
+
+  # Spring Boot Actuator健康檢查
+  - job_name: 'test-library-health'
+    static_configs:
+      - targets: ['demo-app:8080']
+    scrape_interval: 30s
+    metrics_path: '/actuator/health'
+    scrape_timeout: 10s
+
+  # AlertManager監控
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['alertmanager:9093']
+    scrape_interval: 15s
+
+# AlertManager配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
