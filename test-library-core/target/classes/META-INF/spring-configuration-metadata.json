@@ -1,6 +1,35 @@
 {
   "groups": [
     {
+      "name": "test-library.actuator",
+      "type": "com.jamestann.test.library.actuator.LibraryActuatorProperties",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties"
+    },
+    {
+      "name": "test-library.actuator.health",
+      "type": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Health",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties",
+      "sourceMethod": "getHealth()"
+    },
+    {
+      "name": "test-library.actuator.info",
+      "type": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Info",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties",
+      "sourceMethod": "getInfo()"
+    },
+    {
+      "name": "test-library.actuator.metrics",
+      "type": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Metrics",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties",
+      "sourceMethod": "getMetrics()"
+    },
+    {
+      "name": "test-library.actuator.monitoring",
+      "type": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Monitoring",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties",
+      "sourceMethod": "getMonitoring()"
+    },
+    {
       "name": "test.library",
       "type": "com.jamestann.test.library.config.TestLibraryProperties",
       "sourceType": "com.jamestann.test.library.config.TestLibraryProperties"
@@ -13,6 +42,149 @@
     }
   ],
   "properties": [
+    {
+      "name": "test-library.actuator.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable Library Actuator features.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "test-library.actuator.health.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable Library health indicator.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Health",
+      "defaultValue": true
+    },
+    {
+      "name": "test-library.actuator.health.show-details",
+      "type": "java.lang.Boolean",
+      "description": "Whether to include detailed component status.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Health",
+      "defaultValue": true
+    },
+    {
+      "name": "test-library.actuator.info.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable Library info contributor.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Info",
+      "defaultValue": true
+    },
+    {
+      "name": "test-library.actuator.info.include-build",
+      "type": "java.lang.Boolean",
+      "description": "Whether to include build information.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Info",
+      "defaultValue": true
+    },
+    {
+      "name": "test-library.actuator.info.include-features",
+      "type": "java.lang.Boolean",
+      "description": "Whether to include feature flags.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Info",
+      "defaultValue": true
+    },
+    {
+      "name": "test-library.actuator.info.include-git",
+      "type": "java.lang.Boolean",
+      "description": "Whether to include Git information.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Info",
+      "defaultValue": false
+    },
+    {
+      "name": "test-library.actuator.metrics.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable SLI metrics collection.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Metrics",
+      "defaultValue": true
+    },
+    {
+      "name": "test-library.actuator.metrics.include-percentiles",
+      "type": "java.lang.Boolean",
+      "description": "Whether to collect detailed percentiles.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Metrics",
+      "defaultValue": true
+    },
+    {
+      "name": "test-library.actuator.metrics.max-tags",
+      "type": "java.lang.Integer",
+      "description": "Maximum number of tags per metric.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Metrics",
+      "defaultValue": 10
+    },
+    {
+      "name": "test-library.actuator.metrics.percentiles",
+      "type": "java.lang.Double[]",
+      "description": "Percentiles to collect for timing metrics.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Metrics",
+      "defaultValue": [
+        0.5,
+        0.9,
+        0.95,
+        0.99
+      ]
+    },
+    {
+      "name": "test-library.actuator.monitoring.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable package-based monitoring.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Monitoring",
+      "defaultValue": true
+    },
+    {
+      "name": "test-library.actuator.monitoring.exclude-packages",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Packages to exclude from monitoring. Methods in these packages will not be monitored, even if they have @IncludeMonitoring annotation.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Monitoring"
+    },
+    {
+      "name": "test-library.actuator.monitoring.include-packages",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Packages to include in monitoring. Methods in these packages will be monitored by default, unless explicitly excluded with @ExcludeMonitoring.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Monitoring"
+    },
+    {
+      "name": "test-library.actuator.monitoring.include-parameters",
+      "type": "java.lang.Boolean",
+      "description": "Whether to include method parameters in monitoring. Use with caution to avoid high cardinality or sensitive data exposure.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Monitoring",
+      "defaultValue": false
+    },
+    {
+      "name": "test-library.actuator.monitoring.max-execution-time",
+      "type": "java.lang.Long",
+      "description": "Maximum method execution time (in milliseconds) to record. Methods taking longer will be capped at this value for metrics.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Monitoring",
+      "defaultValue": 60000
+    },
+    {
+      "name": "test-library.actuator.monitoring.monitor-controllers",
+      "type": "java.lang.Boolean",
+      "description": "Whether to monitor all @Controller methods by default.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Monitoring",
+      "defaultValue": false
+    },
+    {
+      "name": "test-library.actuator.monitoring.monitor-repositories",
+      "type": "java.lang.Boolean",
+      "description": "Whether to monitor all @Repository methods by default.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Monitoring",
+      "defaultValue": false
+    },
+    {
+      "name": "test-library.actuator.monitoring.monitor-rest-controllers",
+      "type": "java.lang.Boolean",
+      "description": "Whether to monitor all @RestController methods by default.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Monitoring",
+      "defaultValue": false
+    },
+    {
+      "name": "test-library.actuator.monitoring.monitor-services",
+      "type": "java.lang.Boolean",
+      "description": "Whether to monitor all @Service methods by default.",
+      "sourceType": "com.jamestann.test.library.actuator.LibraryActuatorProperties$Monitoring",
+      "defaultValue": false
+    },
     {
       "name": "test.library.actuator.custom-endpoints-enabled",
       "type": "java.lang.Boolean",

@@ -1,3 +1,12 @@
 C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\config\TestLibraryAutoConfigurationTest.java
+C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\actuator\LibraryMetricsAspectTest.java
+C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\actuator\LibraryActuatorAutoConfigurationTest.java
+C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\actuator\LibraryMonitoringInterceptorTest.java
 C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\integration\LibraryInternalIntegrationTest.java
+C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\actuator\ActuatorTestConfiguration.java
+C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\actuator\LibraryActuatorIntegrationTest.java
+C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\actuator\LibraryHealthIndicatorTest.java
+C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\actuator\LibrarySLICollectorTest.java
+C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\actuator\LibraryAopIntegrationTest.java
 C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\compatibility\JavaVersionCompatibilityTest.java
+C:\Users\James\IdeaProjects\test-library\test-library-core\src\test\java\com\jamestann\test\library\actuator\LibraryInfoContributorTest.java

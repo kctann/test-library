@@ -17,16 +17,72 @@ test:
       custom-endpoints-enabled: true
       endpoint-path-prefix: test-library
 
+# Test Library Actuator完整配置
+test-library:
+  actuator:
+    # 總開關
+    enabled: true
+    
+    # Health Check配置
+    health:
+      enabled: true
+    
+    # Info Contributor配置  
+    info:
+      enabled: true
+      
+    # SLI Metrics配置
+    metrics:
+      enabled: true
+      include-percentiles: true
+      percentiles: [0.5, 0.75, 0.95, 0.99]
+    
+    # AOP監控配置
+    aop:
+      enabled: true
+      
+    # 監控配置
+    monitoring:
+      enabled: true
+      # HTTP攔截器 (可選，建議使用AOP)
+      http-interceptor:
+        enabled: false
+      
+      # 包級別監控配置
+      include-packages:
+        - "com.jamestann.test.library.demo.controller.**"
+        - "com.jamestann.test.library.demo.service.**"
+      exclude-packages:
+        - "com.jamestann.test.library.demo.internal.**"
+        
+      # Spring stereotype監控
+      monitor-rest-controllers: true
+      monitor-controllers: true  
+      monitor-services: true
+      monitor-repositories: true
+      
+      # 監控選項
+      include-parameters: false
+      include-return-type: false
+
 # Actuator Configuration
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,test-library
+        include: health,info,metrics,prometheus,test-library
       base-path: /actuator
   endpoint:
     health:
       show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
   info:
     env:
       enabled: true

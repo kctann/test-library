@@ -1,1 +1,2 @@
 com.jamestann.test.library.config.TestLibraryAutoConfiguration
+com.jamestann.test.library.actuator.LibraryActuatorAutoConfiguration
